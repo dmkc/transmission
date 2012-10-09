@@ -149,7 +149,33 @@ function Inspector(controller) {
         setTextContent(e.state_lb, str);
         stateString = str;
 
-        //
+        //  seed_ratio
+        var $seed_ratio = $(e.seed_ratio);
+
+        if( torrents.length < 1 ) {
+            $seed_ratio.val(none);
+            $seed_ratio.prop('disabled', true);
+        } else {
+            var seed_ratio = torrents[0].getSeedRatioLimit(),
+                str = seed_ratio.toPrecision(3);
+
+            // Make sure input is available for entry
+            $seed_ratio.prop('disabled', false);
+                
+            for(i=0; t=torrents[i]; ++i) {
+                if(seed_ratio != t.getSeedRatioLimit()) {
+                    str = mixed;
+                    $seed_ratio.prop('disabled', true);
+                    break;
+                }
+            }
+
+            // Don't update input if user is amidst trying to change it
+            if ( !$seed_ratio.is(':focus') ) {
+                e.seed_ratio.value = str;
+            }
+        }
+
         //  have_lb
         //
 
@@ -451,6 +477,21 @@ function Inspector(controller) {
         }
         setTextContent(e.foldername_lb, str);
     },
+
+    onChangeSeedRatio = function(e) {
+        var torrents   = data.torrents,
+            $this = $(this),
+            seed_ratio = new Number($this.val());
+
+        // Update number format to double
+        e.preventDefault();
+        $this.val(seed_ratio.toPrecision(3))
+
+        data.controller.changeSeedRatio(
+            torrents[0],
+            seed_ratio
+        );
+    }
 
     /****
     *****  FILES PAGE
@@ -775,6 +816,7 @@ function Inspector(controller) {
         data.elements.trackers_list  = $('#inspector_trackers_list')[0];
 
         data.elements.have_lb           = $('#inspector-info-have')[0];
+        data.elements.seed_ratio        = $('#inspector-info-ratio')[0];
         data.elements.availability_lb   = $('#inspector-info-availability')[0];
         data.elements.downloaded_lb     = $('#inspector-info-downloaded')[0];
         data.elements.uploaded_lb       = $('#inspector-info-uploaded')[0];
@@ -797,6 +839,8 @@ function Inspector(controller) {
         updatePeersPage();
         updateTrackersPage();
         updateFilesPage();
+
+        $(data.elements.seed_ratio).bind('change', onChangeSeedRatio);
     };
 
     /****

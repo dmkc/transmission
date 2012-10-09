@@ -136,6 +136,16 @@ TransmissionRemote.prototype =
 		});
 	},
 
+    changeSeedRatio: function(torrentId, seedRatio) {
+        this.sendTorrentSetRequests(
+           'torrent-set',
+           [torrentId],
+           {
+               'seedRatioLimit': seedRatio
+           }
+       );
+    },
+
 	sendTorrentSetRequests: function(method, torrent_ids, args, callback, context) {
 		if (!args) args = { };
 		args['ids'] = torrent_ids;

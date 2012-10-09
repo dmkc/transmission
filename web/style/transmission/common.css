@@ -343,6 +343,9 @@ ul.torrent_list {
   .prefs-section #alternative-speed-limits-title {
     padding-left: 18px;
     background: transparent url("images/blue-turtle.png") no-repeat; }
+  .prefs-section .row > input {
+      display: block;
+  }
 
 /***
 ****

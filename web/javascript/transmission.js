@@ -1039,6 +1039,15 @@ Transmission.prototype =
 		this.remote.changeFileCommand(torrentId, rowIndices, command);
 	},
 
+	changeSeedRatio: function(torrent, seedRatio) {
+		this.remote.changeSeedRatio(
+           torrent.getId(),
+           seedRatio
+        );
+
+        torrent.fields.seedRatioLimit = seedRatio;
+	},
+
 	hideMobileAddressbar: function(delaySecs) {
 		if (isMobileDevice && !scroll_timeout) {
 			var callback = $.proxy(this.doToolbarHide,this),
